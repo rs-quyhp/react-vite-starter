@@ -4,7 +4,14 @@ import InputToDo from "./todo/inputTodo.component";
 function App() {
   return (
     <>
-      <InputToDo />
+      <InputToDo 
+        name={'quyhp'}
+        age={25}
+        info={{
+          gender: 'male',
+          address: 'DN'
+        }}
+      />
     </>
   );
 }
