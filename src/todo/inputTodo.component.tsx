@@ -7,11 +7,13 @@ interface IProps {
     gender: string;
     address: string;
   };
+  listTodo: string[];
+  setListTodo: (value: string[]) => void;
 }
 
 const InputToDo = (abc: IProps) => {
+  const { listTodo, setListTodo } = abc;
   const [todoName, setTodoName] = useState("My Todo");
-  const [listTodo, setListTodo] = useState(["Todo 1"]);
 
   const handleClick = () => {
     if (!todoName) {
@@ -35,11 +37,6 @@ const InputToDo = (abc: IProps) => {
         &nbsp; &nbsp;
         <button onClick={() => handleClick()}>Save</button>
       </div>
-      <ul>
-        {listTodo.map((item, index) => (
-          <li key={index}>{item}</li>
-        ))}
-      </ul>
     </div>
   );
 };

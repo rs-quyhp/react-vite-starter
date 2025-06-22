@@ -1,7 +1,10 @@
+import { useState } from "react";
 import "./App.css";
 import InputToDo from "./todo/inputTodo.component";
 
 function App() {
+  const [listTodo, setListTodo] = useState(["Todo 1"]);
+
   return (
     <>
       <InputToDo
@@ -11,7 +14,15 @@ function App() {
           gender: "male",
           address: "DN",
         }}
+        listTodo={listTodo}
+        setListTodo={setListTodo}
       />
+
+      <ul>
+        {listTodo.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
     </>
   );
 }
