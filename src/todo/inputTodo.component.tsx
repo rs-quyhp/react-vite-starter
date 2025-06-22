@@ -10,6 +10,9 @@ interface IProps {
 const InputToDo = (abc: IProps) => {
   const { name, age, info } = abc;
 
+  const handleClick = () => {
+    alert("saved");
+  };
   return (
     <div>
       <div>
@@ -19,9 +22,14 @@ const InputToDo = (abc: IProps) => {
       </div>
       <span>Add new todo</span>
       <div>
-        <input type="text" />
+        <input
+          type="text"
+          onChange={(event) => {
+            console.log(event.target.value);
+          }}
+        />
         &nbsp; &nbsp;
-        <button>Save</button>
+        <button onClick={() => handleClick()}>Save</button>
       </div>
     </div>
   );
