@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface IProps {
   age: number;
   name: string;
@@ -9,7 +11,7 @@ interface IProps {
 
 const InputToDo = (abc: IProps) => {
   const { name, age, info } = abc;
-
+  const [listName, setListName] = useState("My Todo");
   const handleClick = () => {
     alert("saved");
   };
@@ -25,12 +27,13 @@ const InputToDo = (abc: IProps) => {
         <input
           type="text"
           onChange={(event) => {
-            console.log(event.target.value);
+            setListName(event.target.value);
           }}
         />
         &nbsp; &nbsp;
         <button onClick={() => handleClick()}>Save</button>
       </div>
+      <span>My to do is {listName}</span>
     </div>
   );
 };
