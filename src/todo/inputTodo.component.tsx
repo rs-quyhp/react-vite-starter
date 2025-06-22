@@ -10,30 +10,36 @@ interface IProps {
 }
 
 const InputToDo = (abc: IProps) => {
-  const { name, age, info } = abc;
-  const [listName, setListName] = useState("My Todo");
+  const [todoName, setTodoName] = useState("My Todo");
+  const [listTodo, setListTodo] = useState(["Todo 1"]);
+
   const handleClick = () => {
-    alert("saved");
+    if (!todoName) {
+      alert("Empty todo name");
+      return;
+    }
+    setListTodo([...listTodo, todoName]);
+    setTodoName("");
   };
   return (
     <div>
-      <div>
-        <span>
-          Name: {name}, age: {age}, info: {JSON.stringify(info)}
-        </span>
-      </div>
       <span>Add new todo</span>
       <div>
         <input
           type="text"
+          value={todoName}
           onChange={(event) => {
-            setListName(event.target.value);
+            setTodoName(event.target.value);
           }}
         />
         &nbsp; &nbsp;
         <button onClick={() => handleClick()}>Save</button>
       </div>
-      <span>My to do is {listName}</span>
+      <ul>
+        {listTodo.map((item, index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
     </div>
   );
 };
