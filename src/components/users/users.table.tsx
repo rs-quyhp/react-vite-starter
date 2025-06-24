@@ -1,7 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "../../styles/users.css";
 
+interface IUser {
+  email: string;
+  name: string;
+  role: string;
+}
+
 const UsersTable = () => {
+  const [listUsers, setListUsers] = useState([]);
+
   const getData = async () => {
     // Get access token
     const res = await fetch("http://localhost:8000/api/v1/auth/login", {
@@ -29,8 +37,7 @@ const UsersTable = () => {
     });
 
     const usersData = await usersRes.json();
-
-    console.log("usersData", usersData);
+    setListUsers(usersData.data.result);
   };
 
   useEffect(() => {
@@ -39,44 +46,23 @@ const UsersTable = () => {
 
   return (
     <div>
-      <h2>HTML Table</h2>
+      <h2>Users Table</h2>
 
       <table>
         <tr>
-          <th>Company</th>
-          <th>Contact</th>
-          <th>Country</th>
+          <th>Email</th>
+          <th>Name</th>
+          <th>Role</th>
         </tr>
-        <tr>
-          <td>Alfreds Futterkiste</td>
-          <td>Maria Anders</td>
-          <td>Germany</td>
-        </tr>
-        <tr>
-          <td>Centro comercial Moctezuma</td>
-          <td>Francisco Chang</td>
-          <td>Mexico</td>
-        </tr>
-        <tr>
-          <td>Ernst Handel</td>
-          <td>Roland Mendel</td>
-          <td>Austria</td>
-        </tr>
-        <tr>
-          <td>Island Trading</td>
-          <td>Helen Bennett</td>
-          <td>UK</td>
-        </tr>
-        <tr>
-          <td>Laughing Bacchus Winecellars</td>
-          <td>Yoshi Tannamuri</td>
-          <td>Canada</td>
-        </tr>
-        <tr>
-          <td>Magazzini Alimentari Riuniti</td>
-          <td>Giovanni Rovelli</td>
-          <td>Italy</td>
-        </tr>
+        {listUsers.map((user: IUser, index) => {
+          return (
+            <tr key={index}>
+              <td>{user.email}</td>
+              <td>{user.name}</td>
+              <td>{user.role}</td>
+            </tr>
+          );
+        })}
       </table>
     </div>
   );
