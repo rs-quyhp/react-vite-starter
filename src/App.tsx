@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./App.css";
+import "./App.scss";
 import InputToDo from "./todo/inputTodo.component";
 
 function App() {
