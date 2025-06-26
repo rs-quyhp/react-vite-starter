@@ -5,6 +5,7 @@ interface IUser {
   email: string;
   name: string;
   role: string;
+  _id: string;
 }
 
 const UsersTable = () => {
@@ -54,9 +55,9 @@ const UsersTable = () => {
           <th>Name</th>
           <th>Role</th>
         </tr>
-        {listUsers.map((user: IUser, index) => {
+        {listUsers.map((user: IUser) => {
           return (
-            <tr key={index}>
+            <tr key={user._id}>
               <td>{user.email}</td>
               <td>{user.name}</td>
               <td>{user.role}</td>
