@@ -12,21 +12,7 @@ const DeleteUserButton = (props: IProps) => {
 
   const onConfirmDelete = async () => {
     if (record?._id) {
-      // Get access token
-      const res = await fetch('http://localhost:8000/api/v1/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: 'admin@gmail.com',
-          password: '123456',
-        }),
-      });
-
-      const authData = await res.json();
-
-      const accessToken = authData?.data?.access_token;
+      const accessToken = localStorage.getItem('access_token');
 
       // Delete user
       const response = await fetch(

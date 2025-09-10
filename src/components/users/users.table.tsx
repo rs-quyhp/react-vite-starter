@@ -1,15 +1,8 @@
 import { useEffect, useState } from 'react';
 // import '../../styles/users.css';
-import {
-  Button,
-  message,
-  notification,
-  Popconfirm,
-  PopconfirmProps,
-  Table,
-} from 'antd';
+import { Button, notification, Table } from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
+import { EditFilled, PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './create.user.modal';
 import UpdateUserModal from './update.user.modal';
 import DeleteUserButton from './delete.user.button';
@@ -29,32 +22,27 @@ const UsersTable = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [record, setRecord] = useState<null | IUser>(null);
+  const [meta, setMeta] = useState({
+    current: 1,
+    pageSize: 1,
+    pages: 0,
+    total: 0,
+  });
 
   const getData = async () => {
-    // Get access token
-    const res = await fetch('http://localhost:8000/api/v1/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: 'admin@gmail.com',
-        password: '123456',
-      }),
-    });
-
-    const data = await res.json();
-
-    const accessToken = data?.data?.access_token;
+    const accessToken = localStorage.getItem('access_token');
 
     // Fetch list user
-    const usersRes = await fetch('http://localhost:8000/api/v1/users/all', {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-    });
+    const usersRes = await fetch(
+      `http://localhost:8000/api/v1/users?current=${meta.current}&pageSize=${meta.pageSize}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     const usersData = await usersRes.json();
 
@@ -66,11 +54,40 @@ const UsersTable = () => {
     }
 
     setListUsers(usersData.data.result);
+    setMeta(usersData.data.meta);
   };
 
   const onClickUpdate = (record: IUser) => {
     setRecord(record);
     setIsUpdateModalOpen(true);
+  };
+
+  const onPaginationChange = async (page: number, pageSize: number) => {
+    const accessToken = localStorage.getItem('access_token');
+
+    // Fetch list user
+    const usersRes = await fetch(
+      `http://localhost:8000/api/v1/users?current=${page}&pageSize=${pageSize}`,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    const usersData = await usersRes.json();
+
+    if (!usersData.data) {
+      notification.error({
+        message: 'Error',
+        description: JSON.stringify(usersData?.message),
+      });
+    }
+
+    setListUsers(usersData.data.result);
+    setMeta(usersData.data.meta);
   };
 
   useEffect(() => {
@@ -112,6 +129,7 @@ const UsersTable = () => {
       },
     },
   ];
+
   return (
     <div>
       <CreateUserModal
@@ -142,7 +160,20 @@ const UsersTable = () => {
           New user
         </Button>
       </div>
-      <Table columns={columns} dataSource={listUsers} rowKey={'_id'} />
+      <Table
+        columns={columns}
+        dataSource={listUsers}
+        rowKey={'_id'}
+        pagination={{
+          current: meta.current,
+          pageSize: meta.pageSize,
+          total: meta.total,
+          showTotal: (total, range) =>
+            `Showing ${range[0]} - ${range[1]} of ${total} items`,
+          onChange: onPaginationChange,
+          showSizeChanger: true,
+        }}
+      />
       {/* <table>
         <tr>
           <th>Email</th>

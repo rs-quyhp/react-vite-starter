@@ -38,21 +38,7 @@ const UpdateUserModal = (props: IProps) => {
       role,
     };
 
-    // Get access token
-    const res = await fetch('http://localhost:8000/api/v1/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        username: 'admin@gmail.com',
-        password: '123456',
-      }),
-    });
-
-    const authData = await res.json();
-
-    const accessToken = authData?.data?.access_token;
+    const accessToken = localStorage.getItem('access_token');
 
     // Update user
     const response = await fetch('http://localhost:8000/api/v1/users', {
