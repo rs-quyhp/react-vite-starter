@@ -1,10 +1,18 @@
 import { useEffect, useState } from 'react';
 // import '../../styles/users.css';
-import { Button, notification, Table } from 'antd';
+import {
+  Button,
+  message,
+  notification,
+  Popconfirm,
+  PopconfirmProps,
+  Table,
+} from 'antd';
 import { ColumnsType } from 'antd/es/table';
-import { EditFilled, PlusOutlined } from '@ant-design/icons';
+import { DeleteFilled, EditFilled, PlusOutlined } from '@ant-design/icons';
 import CreateUserModal from './create.user.modal';
 import UpdateUserModal from './update.user.modal';
+import DeleteUserButton from './delete.user.button';
 
 export interface IUser {
   email: string;
@@ -64,6 +72,7 @@ const UsersTable = () => {
     setRecord(record);
     setIsUpdateModalOpen(true);
   };
+
   useEffect(() => {
     getData();
   }, []);
@@ -89,13 +98,16 @@ const UsersTable = () => {
       title: 'Actions',
       render: (_, record) => {
         return (
-          <Button
-            type="default"
-            icon={<EditFilled />}
-            onClick={() => onClickUpdate(record)}
-          >
-            Edit
-          </Button>
+          <div style={{ display: 'flex', gap: '5px' }}>
+            <Button
+              type="default"
+              icon={<EditFilled />}
+              onClick={() => onClickUpdate(record)}
+            >
+              Edit
+            </Button>
+            <DeleteUserButton record={record} getData={getData} />
+          </div>
         );
       },
     },
