@@ -15,6 +15,7 @@ export interface IUser {
   address: string;
   age: string;
   gender: string;
+  password?: string;
 }
 
 const UsersTable = () => {
