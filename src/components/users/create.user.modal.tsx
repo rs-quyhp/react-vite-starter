@@ -1,6 +1,15 @@
-import { DownOutlined } from '@ant-design/icons';
-import { Modal, Input, Dropdown, Button, Space, notification } from 'antd';
-import { useState } from 'react';
+import {
+  Modal,
+  Input,
+  notification,
+  Form,
+  FormProps,
+  InputNumber,
+  Select,
+  message,
+} from 'antd';
+
+const { Option } = Select;
 
 interface IProps {
   getData: () => void;
@@ -9,26 +18,15 @@ interface IProps {
 }
 
 const CreateUserModal = (props: IProps) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('male');
-  const [address, setAddress] = useState('');
-  const [role, setRole] = useState('ADMIN');
   const { getData, isCreateModalOpen, setIsCreateModalOpen } = props;
+  const [form] = Form.useForm();
 
-  const handleOk = async () => {
-    const data = {
-      name,
-      email,
-      password,
-      age,
-      gender,
-      address,
-      role,
-    };
+  const handleCloseModal = () => {
+    form.resetFields();
+    setIsCreateModalOpen(false);
+  };
 
+  const onFinish: FormProps['onFinish'] = async (values) => {
     const accessToken = localStorage.getItem('access_token');
 
     // Create user
@@ -38,15 +36,15 @@ const CreateUserModal = (props: IProps) => {
         Authorization: `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(values),
     });
 
     const responseData = await response.json();
 
     if (responseData.data) {
       getData();
-      notification.success({
-        message: 'User created successfully',
+      message.success({
+        content: 'User created successfully',
       });
       handleCloseModal();
     } else {
@@ -57,100 +55,98 @@ const CreateUserModal = (props: IProps) => {
     }
   };
 
-  const handleCloseModal = () => {
-    setName('');
-    setEmail('');
-    setPassword('');
-    setAge('');
-    setGender('male');
-    setAddress('');
-    setRole('ADMIN');
-    setIsCreateModalOpen(false);
-  };
-
   return (
     <Modal
       title="Add new user"
       closable={true}
       open={isCreateModalOpen}
-      onOk={handleOk}
+      onOk={() => form.submit()}
       onCancel={handleCloseModal}
       maskClosable={false}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div>
-          <label>Name:</label>
-          <Input value={name} onChange={(e) => setName(e.target.value)} />
-        </div>
-        <div>
-          <label>Email:</label>
-          <Input value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div>
-          <label>Password:</label>
-          <Input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-          />
-        </div>
-        <div>
-          <label>Age:</label>
-          <Input
-            value={age}
-            onChange={(e) => setAge(e.target.value)}
-            type="number"
-          />
-        </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <label>Gender:</label>
-          <Dropdown
-            menu={{
-              items: [
-                { label: 'Male', key: 'male' },
-                { label: 'Female', key: 'female' },
-              ],
-              onClick: ({ key }) => {
-                setGender(key);
-              },
-              defaultValue: gender,
-            }}
-          >
-            <Button>
-              <Space>
-                {gender.charAt(0).toUpperCase() + gender.slice(1)}
-                <DownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-        </div>
-        <div>
-          <label>Address:</label>
-          <Input value={address} onChange={(e) => setAddress(e.target.value)} />
-        </div>
-        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-          <label>Role:</label>
-          <Dropdown
-            menu={{
-              items: [
-                { label: 'ADMIN', key: 'ADMIN' },
-                { label: 'USER', key: 'USER' },
-              ],
-              onClick: ({ key }) => {
-                setRole(key);
-              },
-              defaultValue: role,
-            }}
-          >
-            <Button>
-              <Space>
-                {role.charAt(0).toUpperCase() + role.slice(1)}
-                <DownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-        </div>
-      </div>
+      <Form
+        name="basic"
+        onFinish={onFinish}
+        autoComplete="off"
+        layout="vertical"
+        form={form}
+      >
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          label="Name"
+          name="name"
+          rules={[{ required: true, message: 'Please input your name!' }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: 'Please input your email!' },
+            {
+              type: 'email',
+              message: 'The input is not valid E-mail!',
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          label="Password"
+          name="password"
+          rules={[{ required: true, message: 'Please input your password!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          label="Age"
+          name="age"
+          rules={[{ required: true, message: 'Please input your age!' }]}
+        >
+          <InputNumber style={{ width: '100%' }} />
+        </Form.Item>
+
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          name="gender"
+          label="Gender"
+          rules={[{ required: true, message: 'Please select your gender!' }]}
+        >
+          <Select placeholder="Select gender" allowClear>
+            <Option value="MALE">Male</Option>
+            <Option value="FEMALE">Female</Option>
+            <Option value="OTHER">Other</Option>
+          </Select>
+        </Form.Item>
+
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          label="Address"
+          name="address"
+          rules={[{ required: true, message: 'Please input your address!' }]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          style={{ marginBottom: 5 }}
+          name="role"
+          label="Role"
+          rules={[{ required: true, message: 'Please select role!' }]}
+        >
+          <Select placeholder="Select Role" allowClear>
+            <Option value="ADMIN">Admin</Option>
+            <Option value="USER">User</Option>
+          </Select>
+        </Form.Item>
+      </Form>
     </Modal>
   );
 };
