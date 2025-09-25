@@ -9,9 +9,10 @@ import {
   useLocation,
 } from 'react-router-dom';
 import UserPage from './screens/users.page.tsx';
-import { HomeOutlined, UserOutlined } from '@ant-design/icons';
+import { AudioOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Menu } from 'antd';
+import TrackPage from './screens/tracks.page.tsx';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -25,6 +26,11 @@ const items: MenuItem[] = [
     label: <Link to="/users">User Management</Link>,
     key: 'users',
     icon: <UserOutlined />,
+  },
+  {
+    label: <Link to="/tracks">Track Management</Link>,
+    key: 'tracks',
+    icon: <AudioOutlined />,
   },
 ];
 
@@ -43,6 +49,7 @@ const Header: React.FC = () => {
     switch (path) {
       case 'home':
       case 'users':
+      case 'tracks':
         setCurrent(path);
         break;
       default:
@@ -102,6 +109,10 @@ const router = createBrowserRouter([
       {
         path: 'users',
         element: <UserPage />,
+      },
+      {
+        path: 'tracks',
+        element: <TrackPage />,
       },
     ],
   },
