@@ -1,6 +1,13 @@
+import {
+  AudioOutlined,
+  CommentOutlined,
+  HomeOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import type { MenuProps } from 'antd';
+import { Menu } from 'antd';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App.tsx';
 import {
   createBrowserRouter,
   Link,
@@ -8,11 +15,10 @@ import {
   RouterProvider,
   useLocation,
 } from 'react-router-dom';
-import UserPage from './screens/users.page.tsx';
-import { AudioOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Menu } from 'antd';
+import App from './App.tsx';
+import CommentPage from './screens/comments.page.tsx';
 import TrackPage from './screens/tracks.page.tsx';
+import UserPage from './screens/users.page.tsx';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -32,6 +38,11 @@ const items: MenuItem[] = [
     key: 'tracks',
     icon: <AudioOutlined />,
   },
+  {
+    label: <Link to="/comments">Comment Management</Link>,
+    key: 'comments',
+    icon: <CommentOutlined />,
+  },
 ];
 
 const Header: React.FC = () => {
@@ -50,6 +61,7 @@ const Header: React.FC = () => {
       case 'home':
       case 'users':
       case 'tracks':
+      case 'comments':
         setCurrent(path);
         break;
       default:
@@ -113,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: 'tracks',
         element: <TrackPage />,
+      },
+      {
+        path: 'comments',
+        element: <CommentPage />,
       },
     ],
   },
